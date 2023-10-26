@@ -115,7 +115,7 @@ async function addDepartment() {
 
 async function addRole() { 
     const dbData = await db.promise().query(`SELECT * FROM department`);
-    const departments = dbData.rows.map((dpt)=> {
+    const departments = await dbData[0].map((dpt)=> {
         return {name: dpt.name, value: dpt.id}
     });
     inquirer.prompt([
@@ -147,11 +147,11 @@ async function addRole() {
 
 async function addEmployee() { 
     const dbData = await db.promise().query('SELECT * FROM role');
-    const roles = dbData.rows.map((role)=> {
+    const roles = dbData[0].map((role)=> {
         return {name: role.title, value: role.id}
     });
     const dbManagers = await db.promise().query('SELECT * FROM employee');
-    const managers = dbManagers.rows.map((manager) => {
+    const managers = dbManagers[0].map((manager) => {
         return {name: `${manager.first_name} ${manager.last_name}`, value: manager.id}
     })
     inquirer.prompt([
@@ -191,11 +191,11 @@ async function addEmployee() {
 
 async function updateEmployeeRole() { 
     const dbData = await db.promise().query('SELECT * FROM role');
-    const roles = dbData.rows.map((role)=> {
+    const roles = dbData[0].map((role)=> {
         return {name: role.title, value: role.id}
     });
     const dbEmployees = await db.promise().query('SELECT * FROM employee');
-    const employees = dbEmployees.rows.map((emp) => {
+    const employees = dbEmployees[0].map((emp) => {
         return {name: `${emp.first_name} ${emp.last_name}`, value: emp.id}
     })
     inquirer.prompt([
