@@ -26,7 +26,7 @@ The purpose of this project is to build a command-line application to manage a c
 
 ## Usage
 
-Link to video recording: 
+Link to video recording: https://drive.google.com/file/d/1Nbm-83SUQsi40XnqLGywcvEKyC10BiU4/view
 
 ![alt text](/assets/images/bell_emp_tracker_screenshot.png)
 
