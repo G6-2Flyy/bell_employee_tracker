@@ -1,6 +1,26 @@
 const inquirer = require("inquirer");
 const db = require("./db/connection");
 const cTable = require("console.table");
+const logo = require("asciiart-logo");
+const text = "EMPLOYEE MANAGER";
+
+console.log(
+  logo({
+    name: "EMPLOYEE MANAGER",
+    font: "Speed",
+    lineChars: 10,
+    padding: 2,
+    margin: 3,
+    borderColor: "grey",
+    logoColor: "bold-green",
+    textColor: "green",
+  })
+    .emptyLine()
+    .right("version 3.7.123")
+    .emptyLine()
+    .center(text)
+    .render()
+);
 
 // TODO: Create an array of questions for user input
 const questions = [
@@ -38,15 +58,17 @@ function init() {
         addDepartment()
         break;
       case "Add a role":
-        addRole()
+        addRole();
         break;
       case "Add an employee":
-        addEmployee()
+        addEmployee();
         break;
       case "Update an employee role":
-        updateEmployeeRole()
+        updateEmployeeRole();
         break;
       case "Quit":
+        db.end();
+        break;
     }
   });
 }
@@ -54,11 +76,13 @@ function init() {
 async function viewDepartments() {
   const results = await db.promise().query("SELECT * FROM department");
   console.table(results[0]);
+  init();
 }
 
 async function viewRoles() {
     const results = await db.promise().query("SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id");
     console.table(results[0]);
+    init();
 }
 
 async function viewEmployees() {
@@ -70,6 +94,7 @@ async function viewEmployees() {
      INNER JOIN department ON role.department_id = department.id
      LEFT JOIN employee m ON employee.manager_id = m.id`);
     console.table(results[0]);
+    init();
 }
 
 async function addDepartment() {
@@ -83,8 +108,9 @@ async function addDepartment() {
     .then(async(answers) => {
         const results = await db.promise().query(`INSERT INTO department (name) VALUES (?) `, [answers.name]);
         console.log('A new department has been added successfully! ');
+        init(); 
     })
-   
+  
 }
 
 async function addRole() { 
@@ -114,6 +140,7 @@ async function addRole() {
     .then(async(answers) => {
         const results = await db.promise().query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?) `, [answers.title, answers.salary, answers.department]);
     console.log('A new role has been added successfully! ');
+    init();
     })
     
 }
@@ -156,8 +183,11 @@ async function addEmployee() {
         const results = await db.promise().query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?) `,
          [answers.first_name, answers.last_name, answers.role, answers.manager]);
     console.log('A new employee has been added successfully! ');
+    init()
     })
+
 }
+
 
 async function updateEmployeeRole() { 
     const dbData = await db.promise().query('SELECT * FROM role');
@@ -191,7 +221,9 @@ async function updateEmployeeRole() {
             const results = await db.promise().query(`UPDATE employee SET role_id = ? WHERE id = ? `,
              [response.role, answers.employee]);
         console.log('An employee role has been updated successfully! ');
+        init();
         })
     })
+
 }
 init();
